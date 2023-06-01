@@ -1,9 +1,6 @@
 #ifndef COMPILERPARSER_H
 #define COMPILERPARSER_H
 
-#include <list>
-#include <exception>
-
 #include "ParseTree.h"
 #include "Token.h"
 
@@ -14,8 +11,6 @@
 #include <vector>
 #include <list>
 
-#include "ParseTree.h"
-#include "Token.h"
 
 // an abstraction interface for managing the tokens. for scaling later
 struct TokenList {
@@ -36,57 +31,54 @@ struct TokenList {
 };
 
 class CompilerParser {
-    public:
-        CompilerParser(std::list<Token*> tokens);
+public:
+  CompilerParser(std::vector<Token *> tokens);
 
-        ParseTree* compileProgram();
-        ParseTree* compileClass();
-        ParseTree* compileClassVarDec();
-        ParseTree* compileSubroutine();
-        ParseTree* compileParameterList();
-        ParseTree* compileSubroutineBody();
-        ParseTree* compileVarDec();
+  ParseTree *compileProgram();
+  ParseTree *compileClass();
+  ParseTree *compileClassVarDec();
+  ParseTree *compileSubroutine();
+  ParseTree *compileParameterList();
+  ParseTree *compileSubroutineBody();
+  ParseTree *compileVarDec();
 
-        ParseTree* compileStatements();
-        ParseTree* compileLet();
-        ParseTree* compileIf();
-        ParseTree* compileWhile();
-        ParseTree* compileDo();
-        ParseTree* compileReturn();
+  ParseTree *compileStatements();
+  ParseTree *compileLet();
+  ParseTree *compileIf();
+  ParseTree *compileWhile();
+  ParseTree *compileDo();
+  ParseTree *compileReturn();
 
-        ParseTree* compileExpression();
-        ParseTree* compileTerm();
-        ParseTree* compileExpressionList();
-        
-        void next();
-        Token* current();
-        bool have(std::string expectedType, std::string expectedValue);
-        Token* mustBe(std::string expectedType, std::string expectedValue);
+  ParseTree *compileExpression();
+  ParseTree *compileTerm();
+  ParseTree *compileExpressionList();
 
-        private:
-        bool validateClass(ParseTree*);
-        bool validateClassVarDec(ParseTree*);
-        bool validateSubroutine(ParseTree*);
-        bool validateParameterList(ParseTree*);
-        bool validateSubroutineBody(ParseTree*);
-        bool validateVarDec(ParseTree*);
-        
-        bool validateLet(ParseTree*);
-        bool validateIf(ParseTree*);
-        bool validateWhile(ParseTree*);
-        bool validateDo(ParseTree*);
-        bool validateReturn(ParseTree*);
-        
-        bool validateExpression(ParseTree*);
-        bool validateTerm(ParseTree*);
-        bool validateExpressionList(ParseTree*);
-        
-        TokenList tlist;
+private:
+	bool validateClass(ParseTree*);
+  bool validateClassVarDec(ParseTree*);
+  bool validateSubroutine(ParseTree*);
+  bool validateParameterList(ParseTree*);
+  bool validateSubroutineBody(ParseTree*);
+  bool validateVarDec(ParseTree*);
+
+  bool validateLet(ParseTree*);
+  bool validateIf(ParseTree*);
+  bool validateWhile(ParseTree*);
+  bool validateDo(ParseTree*);
+  bool validateReturn(ParseTree*);
+
+  bool validateExpression(ParseTree*);
+  bool validateTerm(ParseTree*);
+  bool validateExpressionList(ParseTree*);
+
+
+
+  TokenList tlist;
 };
 
 class ParseException : public std::exception {
-    public:
-        const char* what();
+public:
+  const char *what();
 };
 
 // grammar definition maps

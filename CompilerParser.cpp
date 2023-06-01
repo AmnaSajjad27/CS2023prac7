@@ -127,14 +127,7 @@ Token* TokenList::process_token() {
 
 	return t;
 }
-
-/**
- * Constructor for the CompilerParser
- * @param tokens A linked list of tokens to be parsed
- */
-// helpper function 
-string TokenList::tostring() 
-{
+string TokenList::tostring() {
 	std::list<Token*>::iterator it;
 	it = _tks.begin();
 	string out = "";
@@ -146,18 +139,19 @@ string TokenList::tostring()
 	return (*it)->getValue();
 }
 
-CompilerParser::CompilerParser(std::list<Token*> tokens) 
-{
-    tlist = TokenList(tokens);
+/**
+ * Constructor for the CompilerParser
+ * @param tokens A linked list of tokens to be parsed
+ */
+CompilerParser::CompilerParser(std::vector<Token *> tokens) {
+  tlist = TokenList(tokens);
 }
 
 /**
  * Generates a parse tree for a single program
- * @return a ParseTree
  */
-ParseTree* CompilerParser::compileProgram() 
-{
- // the top of a Jack program must be a class - everything is in a class
+ParseTree *CompilerParser::compileProgram() {
+  // the top root of a Jack program must be a class - everything is in a class
   if ( tlist.peek_val(0) == "class") { // validation
     if (tlist.peek_val(1) == "Main" || tlist.peek_val(1) == "main")
       return compileClass();
@@ -169,10 +163,7 @@ ParseTree* CompilerParser::compileProgram()
 
 /**
  * Generates a parse tree for a single class
- * @return a ParseTree
  */
-
-
 ParseTree *CompilerParser::compileClass() {
 	// for testing if token is a classVarDec
 	auto is_vardec = [](ParseTree* a) {
@@ -274,11 +265,9 @@ bool CompilerParser::validateClass(ParseTree* tree) {
 
 /**
  * Generates a parse tree for a static variable declaration or field declaration
- * @return a ParseTree
  */
-ParseTree* CompilerParser::compileClassVarDec() 
-{
-    ParseTree *tree = new ParseTree("classVarDec", "");
+ParseTree *CompilerParser::compileClassVarDec() { 
+	ParseTree *tree = new ParseTree("classVarDec", "");
 	tree->addChild(tlist.process_token()); // the field / static decleration
 	tree->addChild(tlist.process_token()); // keyword 'type'
 	tree->addChild(tlist.process_token()); // an identifier
@@ -338,11 +327,9 @@ bool CompilerParser::validateClassVarDec(ParseTree *tree) {
 
 /**
  * Generates a parse tree for a method, function, or constructor
- * @return a ParseTree
  */
-ParseTree* CompilerParser::compileSubroutine() 
-{
-    ParseTree *tree = new ParseTree("subroutine", "");
+ParseTree *CompilerParser::compileSubroutine() {
+	ParseTree *tree = new ParseTree("subroutine", "");
 
 	tree->addChild(tlist.process_token()); // keyword: the subroutine type: function, method or constructor
 	tree->addChild(tlist.process_token()); // keyword: the return type
@@ -395,14 +382,13 @@ bool CompilerParser::validateSubroutine(ParseTree *tree) {
 		return false;
 
 	return true;
+}
 
 /**
  * Generates a parse tree for a subroutine's parameters
- * @return a ParseTree
  */
-ParseTree* CompilerParser::compileParameterList() 
-{
-    ParseTree *tree = new ParseTree("parameterList","");
+ParseTree *CompilerParser::compileParameterList() {
+	ParseTree *tree = new ParseTree("parameterList","");
 
 	auto is_parenthesis = [](ParseTree* a) {
 		if (a==nullptr) return true; // break the loop
@@ -470,11 +456,9 @@ bool CompilerParser::validateParameterList(ParseTree *tree) {
 
 /**
  * Generates a parse tree for a subroutine's body
- * @return a ParseTree
  */
-ParseTree* CompilerParser::compileSubroutineBody() 
-{
-    ParseTree *tree = new ParseTree("subroutineBody", "");
+ParseTree *CompilerParser::compileSubroutineBody() {
+	ParseTree *tree = new ParseTree("subroutineBody", "");
 
 	tree->addChild(tlist.process_token()); // symbol: '{'
 
@@ -496,8 +480,8 @@ ParseTree* CompilerParser::compileSubroutineBody()
 
 	return tree;
 }
-
-vector<ParseTree*> c = tree->getChildren();
+bool CompilerParser::validateSubroutineBody(ParseTree *tree) {
+	vector<ParseTree*> c = tree->getChildren();
 
 	if (c[0]->getType() != "symbol" || c[0]->getValue() != "{")
 		return false;
@@ -515,14 +499,13 @@ vector<ParseTree*> c = tree->getChildren();
 		return false;
 
 	return true;
+}
 
 /**
- * Generates a parse tree for a subroutine variable declaration
- * @return a ParseTree
+ * Generates a parse tree for a variable declaration
  */
-ParseTree* CompilerParser::compileVarDec() 
-{
-    ParseTree *tree = new ParseTree("varDec","");
+ParseTree *CompilerParser::compileVarDec() {
+	ParseTree *tree = new ParseTree("varDec","");
 
 	tree->addChild(tlist.process_token()); // keyword: var
 	tree->addChild(tlist.process_token()); // keyword: type
@@ -551,7 +534,8 @@ ParseTree* CompilerParser::compileVarDec()
 	return tree; 
 }
 
-vector<ParseTree*> c = tree->getChildren();
+bool CompilerParser::validateVarDec(ParseTree* tree) {
+	vector<ParseTree*> c = tree->getChildren();
 	
 	if (tree->getType() != "varDec" || tree->getValue() != "")
 		throw ParseException();
@@ -579,14 +563,13 @@ vector<ParseTree*> c = tree->getChildren();
 		return false;
 	
 	return true;
+}
 
 /**
  * Generates a parse tree for a series of statements
- * @return a ParseTree
  */
-ParseTree* CompilerParser::compileStatements() 
-{
-    ParseTree *tree = new ParseTree ("statements", "");
+ParseTree *CompilerParser::compileStatements() {
+	ParseTree *tree = new ParseTree ("statements", "");
 
 	// end of statements block = return statement;
 	ParseTree *x = tlist.peek();
@@ -613,11 +596,9 @@ ParseTree* CompilerParser::compileStatements()
 
 /**
  * Generates a parse tree for a let statement
- * @return a ParseTree
  */
-ParseTree* CompilerParser::compileLet() 
-{
-    ParseTree *tree = new ParseTree ("letStatement", "");
+ParseTree *CompilerParser::compileLet() {
+	ParseTree *tree = new ParseTree ("letStatement", "");
 
 	tree->addChild(tlist.process_token()); // keyword: let
 	tree->addChild(tlist.process_token()); // an identifier
@@ -639,10 +620,10 @@ ParseTree* CompilerParser::compileLet()
 	if (validateLet(tree) == false) throw ParseException();
 
 	return tree;
-
 }
 
-if (token_not(tree, "letStatement", ""))
+bool CompilerParser::validateLet(ParseTree *tree) {
+	if (token_not(tree, "letStatement", ""))
 		return false;
 
 	vector<ParseTree*> c = tree->getChildren();
@@ -680,14 +661,13 @@ if (token_not(tree, "letStatement", ""))
 	} else return false;
 
 	return true;
+}
 
 /**
  * Generates a parse tree for an if statement
- * @return a ParseTree
  */
-ParseTree* CompilerParser::compileIf() 
-{
-    ParseTree *tree = new ParseTree ("ifStatement", "");
+ParseTree *CompilerParser::compileIf() {
+	ParseTree *tree = new ParseTree ("ifStatement", "");
 
 	tree->addChild(tlist.process_token()); // keyword: if
 	tree->addChild(tlist.process_token()); // symbol: (
@@ -813,14 +793,11 @@ bool CompilerParser::validateIf(ParseTree *tree) {
 	return true;
 }
 
-
 /**
  * Generates a parse tree for a while statement
- * @return a ParseTree
  */
-ParseTree* CompilerParser::compileWhile() 
-{
-    ParseTree *tree = new ParseTree ("whileStatement", "");
+ParseTree *CompilerParser::compileWhile() {
+	ParseTree *tree = new ParseTree ("whileStatement", "");
 
 	tree->addChild(tlist.process_token()); // keyword: while
 	tree->addChild(tlist.process_token()); // symbol: (
@@ -850,7 +827,6 @@ ParseTree* CompilerParser::compileWhile()
 
 	return tree;
 }
-
 bool CompilerParser::validateWhile(ParseTree *tree) {
 	if (token_not(tree, "whileStatement", ""))
 		return false;
@@ -884,12 +860,9 @@ bool CompilerParser::validateWhile(ParseTree *tree) {
 	return true;
 }
 
-
 /**
  * Generates a parse tree for a do statement
- * @return a ParseTree
  */
-
 ParseTree *CompilerParser::compileDo() {
 	ParseTree *tree = new ParseTree ("doStatement", "");
 
@@ -922,14 +895,11 @@ bool CompilerParser::validateDo(ParseTree *tree) {
 	return true;
 }
 
-
 /**
  * Generates a parse tree for a return statement
- * @return a ParseTree
  */
-ParseTree* CompilerParser::compileReturn() 
-{
-    ParseTree *tree = new ParseTree ("returnStatement", "");
+ParseTree *CompilerParser::compileReturn() {
+	ParseTree *tree = new ParseTree ("returnStatement", "");
 
 	tree->addChild(tlist.process_token()); // keyword: return
 
@@ -946,7 +916,6 @@ ParseTree* CompilerParser::compileReturn()
 
 	return tree;
 }
-
 bool CompilerParser::validateReturn(ParseTree *tree) {
 	if (token_not(tree, "returnStatement", ""))
 		return false;
@@ -976,7 +945,6 @@ bool CompilerParser::validateReturn(ParseTree *tree) {
 
 /**
  * Generates a parse tree for an expression
- * @return a ParseTree
  */
 ParseTree *CompilerParser::compileExpression() {
 	ParseTree *tree = new ParseTree("expression", "");
@@ -1025,14 +993,11 @@ ParseTree *CompilerParser::compileExpression() {
 }
 
 
-
 /**
  * Generates a parse tree for an expression term
- * @return a ParseTree
  */
-ParseTree* CompilerParser::compileTerm() 
-{
-    ParseTree *tree = new ParseTree("term","");
+ParseTree *CompilerParser::compileTerm() {
+	ParseTree *tree = new ParseTree("term","");
 	ParseTree *x = tlist.peek();
 
 	if (token_not(x, "symbol", "(")) { // if there is no open bracket, is either a simple term or subroutineCall
@@ -1079,11 +1044,9 @@ ParseTree* CompilerParser::compileTerm()
 
 /**
  * Generates a parse tree for an expression list
- * @return a ParseTree
  */
-ParseTree* CompilerParser::compileExpressionList() 
-{
-    	ParseTree *tree = new ParseTree("expressionList", "");
+ParseTree *CompilerParser::compileExpressionList() {
+	ParseTree *tree = new ParseTree("expressionList", "");
 
 	auto is_ender = [](ParseTree* a) {
 		// if is ), ], ;, or }
@@ -1107,6 +1070,7 @@ ParseTree* CompilerParser::compileExpressionList()
 
 	return tree;
 }
+
 
 /**
  * Advance to the next token
