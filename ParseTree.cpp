@@ -24,7 +24,7 @@ void ParseTree::addChild(ParseTree* child) {
  * Get a list of child nodes in the order they were added.
  * @return A LinkedList of ParseTrees
  */
-vector<ParseTree*> ParseTree::getChildren() {
+list<ParseTree*> ParseTree::getChildren() {
     return ParseTree::children;
 }
 

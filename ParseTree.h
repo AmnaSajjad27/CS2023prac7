@@ -2,20 +2,20 @@
 #define PARSETREE_H
 
 #include <string>
-#include <vector>
+#include <list>
 
 class ParseTree {
     private:
         std::string type;
         std::string value;
-        std::vector<ParseTree*> children;
+        std::list<ParseTree*> children;
 
     public:
-        ParseTree(std::string type, std::string value); // only leaf nodes should have a value
+        ParseTree(std::string type, std::string value);
 
         void addChild(ParseTree* child);
 
-        std::vector<ParseTree*> getChildren();
+        std::list<ParseTree*> getChildren();
 
         std::string getType();
 
