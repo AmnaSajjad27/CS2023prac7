@@ -1,16 +1,14 @@
 #ifndef COMPILERPARSER_H
 #define COMPILERPARSER_H
 
-#include "ParseTree.h"
-#include "Token.h"
-
-
 #include <exception>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
 #include <list>
 
+#include "ParseTree.h"
+#include "Token.h"
 
 // an abstraction interface for managing the tokens. for scaling later
 struct TokenList {
@@ -54,7 +52,7 @@ public:
   ParseTree *compileExpressionList();
 
 private:
-	bool validateClass(ParseTree*);
+  bool validateClass(ParseTree*);
   bool validateClassVarDec(ParseTree*);
   bool validateSubroutine(ParseTree*);
   bool validateParameterList(ParseTree*);
@@ -70,8 +68,11 @@ private:
   bool validateExpression(ParseTree*);
   bool validateTerm(ParseTree*);
   bool validateExpressionList(ParseTree*);
-
-
+  
+  void next();
+  Token* current();
+  bool have(std::string expectedType, std::string expectedValue);
+  Token* mustBe(std::string expectedType, std::string expectedValue);
 
   TokenList tlist;
 };

@@ -1071,7 +1071,6 @@ ParseTree *CompilerParser::compileExpressionList() {
 	return tree;
 }
 
-
 /**
  * Advance to the next token
  */
